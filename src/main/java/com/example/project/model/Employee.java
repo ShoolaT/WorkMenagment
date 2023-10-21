@@ -1,5 +1,32 @@
-package model;
+package com.example.project.model;
+import jakarta.persistence.*;
+import lombok.*;
 
-public record Employee(Integer id, String name, String surname, String patronymic, String email) {
-    
+import java.util.List;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@Entity
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String middleName;
+    private String email;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+    @OneToMany(mappedBy = "author")
+    private List<Task> authoredTasks;
+
+    @OneToMany(mappedBy = "executor")
+    private List<Task> executedTasks;
+
 }
+
