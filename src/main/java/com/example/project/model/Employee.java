@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.List;
 
+
 @Getter
 @Setter
 @Builder
@@ -22,11 +23,8 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-    @OneToMany(mappedBy = "author")
-    private List<Task> authoredTasks;
-
-    @OneToMany(mappedBy = "executor")
-    private List<Task> executedTasks;
+    @OneToMany(mappedBy = "employee")
+    private List<Assignment> assignments;
 
 }
 
