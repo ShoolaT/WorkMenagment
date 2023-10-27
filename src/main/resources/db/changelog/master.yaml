@@ -1,5 +1,5 @@
-databaseChangeLog:
-  - includeAll:
-      path: db/changelog/initial
+#databaseChangeLog:
 #  - includeAll:
-#      path: db/changelog/updates
+#      path: db/changelog/initial
+##  - includeAll:
+##      path: db/changelog/updates

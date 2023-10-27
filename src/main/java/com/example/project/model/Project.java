@@ -17,23 +17,32 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String projectName;
-    private String customerCompany;
-    private String executorCompany;
+    @ManyToOne
+    @JoinColumn(name = "company_customer") // Assuming "company_id" is the foreign key in the Project table
+    private Company customerCompany;
+    @ManyToOne
+    @JoinColumn(name = "company_executor") // Assuming "company_id" is the foreign key in the Project table
+    private Company executorCompany;
+
     private LocalDate startDate;
     private LocalDate endDate;
     private int priority;
 
     @ManyToOne
-    @JoinColumn(name = "employee_id")
+    @JoinColumn(name = "projectLeader")
     private Employee projectLeader;
 
-    @ManyToMany
-    @JoinTable(
-            name = "project_employee",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "employee_id")
-    )
+//    @ManyToMany
+//    @JoinTable(
+//            name = "project_employee",
+//            joinColumns = @JoinColumn(name = "project_id"),
+//            inverseJoinColumns = @JoinColumn(name = "employee_id")
+//    )
+//    private List<Employee> employees;
+
+    @ManyToMany(mappedBy = "projects")
     private List<Employee> employees;
+
 
 }
 

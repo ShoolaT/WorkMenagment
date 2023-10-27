@@ -20,6 +20,9 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Employee> employees;
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
-    private List<Project> projects;
+    @OneToMany(mappedBy = "company_executor", cascade = CascadeType.ALL)
+    private List<Project> executor_projects;
+
+    @OneToMany(mappedBy = "company_customer", cascade = CascadeType.ALL)
+    private List<Project> customer_projects;
 }

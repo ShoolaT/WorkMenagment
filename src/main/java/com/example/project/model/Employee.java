@@ -21,10 +21,14 @@ public class Employee {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "company_id")
+    @JoinColumn(name = "company")
     private Company company;
-    @OneToMany(mappedBy = "employee")
-    private List<Assignment> assignments;
+
+    @OneToMany(mappedBy = "employees")
+    private List<Project> projects;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+    List<Task> tasks;
 
 }
 

@@ -1,80 +1,80 @@
-﻿databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: Shoola
-      changes:
-        - createTable:
-            tableName: project
-            columns:
-              - column:
-                  name: id
-                  type: Long
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: project_name
-                  type: varchar(255)
-              - column:
-                  name: customer_company
-                  type: varchar(255)
-              - column:
-                  name: executor_company
-                  type: varchar(255)
-              - column:
-                  name: start_date
-                  type: date
-              - column:
-                  name: end_date
-                  type: date
-              - column:
-                  name: priority
-                  type: int
-  - changeSet:
-      id: 2
-      author: Shoola
-      changes:
-        - createTable:
-            tableName: employee
-            columns:
-              - column:
-                  name: id
-                  type: Long
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: first_name
-                  type: varchar(255)
-              - column:
-                  name: last_name
-                  type: varchar(255)
-              - column:
-                  name: middle_name
-                  type: varchar(255)
-              - column:
-                  name: email
-                  type: varchar(255)
-  - changeSet:
-      id: 3
-      author: Shoola
-      changes:
-        - createTable:
-            tableName: assignment
-            columns:
-              - column:
-                  name: id
-                  type: Long
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-              - column:
-                  name: employee_id
-                  type: Long
-                  constraints:
-                    foreignKeyName: fk_assignment_employee
-              - column:
-                  name: project_id
-                  type: Long
-                  constraints:
-                    foreignKeyName: fk_assignment_project
+﻿#databaseChangeLog:
+#  - changeSet:
+#      id: 1
+#      author: Shoola
+#      changes:
+#        - createTable:
+#            tableName: project
+#            columns:
+#              - column:
+#                  name: id
+#                  type: Long
+#                  autoIncrement: true
+#                  constraints:
+#                    primaryKey: true
+#              - column:
+#                  name: project_name
+#                  type: varchar(255)
+#              - column:
+#                  name: customer_company
+#                  type: varchar(255)
+#              - column:
+#                  name: executor_company
+#                  type: varchar(255)
+#              - column:
+#                  name: start_date
+#                  type: date
+#              - column:
+#                  name: end_date
+#                  type: date
+#              - column:
+#                  name: priority
+#                  type: int
+#  - changeSet:
+#      id: 2
+#      author: Shoola
+#      changes:
+#        - createTable:
+#            tableName: employee
+#            columns:
+#              - column:
+#                  name: id
+#                  type: Long
+#                  autoIncrement: true
+#                  constraints:
+#                    primaryKey: true
+#              - column:
+#                  name: first_name
+#                  type: varchar(255)
+#              - column:
+#                  name: last_name
+#                  type: varchar(255)
+#              - column:
+#                  name: middle_name
+#                  type: varchar(255)
+#              - column:
+#                  name: email
+#                  type: varchar(255)
+#  - changeSet:
+#      id: 3
+#      author: Shoola
+#      changes:
+#        - createTable:
+#            tableName: assignment
+#            columns:
+#              - column:
+#                  name: id
+#                  type: Long
+#                  autoIncrement: true
+#                  constraints:
+#                    primaryKey: true
+#              - column:
+#                  name: employee_id
+#                  type: Long
+#                  constraints:
+#                    foreignKeyName: fk_assignment_employee
+#              - column:
+#                  name: project_id
+#                  type: Long
+#                  constraints:
+#                    foreignKeyName: fk_assignment_project
