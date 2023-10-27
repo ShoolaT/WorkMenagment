@@ -37,7 +37,7 @@ public class Project {
     //@ManyToMany(mappedBy = "projects")
     @ManyToMany
     @JoinTable(
-            name = "employees",
+            name = "employees_projects",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "employee_id")
     )
