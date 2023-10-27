@@ -17,11 +17,14 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String projectName;
-    @ManyToOne
-    @JoinColumn(name = "company_customer") // Assuming "company_id" is the foreign key in the Project table
+
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "customer_company_id", referencedColumnName = "id")
     private Company customerCompany;
-    @ManyToOne
-    @JoinColumn(name = "company_executor") // Assuming "company_id" is the foreign key in the Project table
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "executor_company_id", referencedColumnName = "id")
     private Company executorCompany;
 
     private LocalDate startDate;
@@ -29,20 +32,47 @@ public class Project {
     private int priority;
 
     @ManyToOne
-    @JoinColumn(name = "projectLeader")
     private Employee projectLeader;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "project_employee",
-//            joinColumns = @JoinColumn(name = "project_id"),
-//            inverseJoinColumns = @JoinColumn(name = "employee_id")
-//    )
-//    private List<Employee> employees;
-
-    @ManyToMany(mappedBy = "projects")
+    //@ManyToMany(mappedBy = "projects")
+    @ManyToMany
+    @JoinTable(
+            name = "employees",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
     private List<Employee> employees;
 
+    @OneToMany(mappedBy = "project")
+    private List<Task> tasks;
 
+//    @ManyToOne
+//    @JoinColumn(name = "company_customer") // Assuming "company_id" is the foreign key in the Project table
+//    private Company customerCompany;
+//    @ManyToOne
+//    @JoinColumn(name = "company_executor") // Assuming "company_id" is the foreign key in the Project table
+//    private Company executorCompany;
+//
+//    private LocalDate startDate;
+//    private LocalDate endDate;
+//    private int priority;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "projectLeader")
+//    private Employee projectLeader;
+//
+////    @ManyToMany
+////    @JoinTable(
+////            name = "project_employee",
+////            joinColumns = @JoinColumn(name = "project_id"),
+////            inverseJoinColumns = @JoinColumn(name = "employee_id")
+////    )
+////    private List<Employee> employees;
+//
+//    @ManyToMany(mappedBy = "projects")
+//    private List<Employee> employees;
+//
+//    @OneToMany(mappedBy = "project")
+//    private List<Task> tasks;
 }
 

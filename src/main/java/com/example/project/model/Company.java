@@ -1,5 +1,6 @@
 package com.example.project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,12 +18,13 @@ public class Company {
     private Long id;
     private String companyName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Employee> employees;
 
-    @OneToMany(mappedBy = "company_executor", cascade = CascadeType.ALL)
-    private List<Project> executor_projects;
+    @OneToMany(mappedBy = "customerCompany")
+    private List<Project> customerProjects;
 
-    @OneToMany(mappedBy = "company_customer", cascade = CascadeType.ALL)
-    private List<Project> customer_projects;
+    @OneToMany(mappedBy = "executorCompany")
+    private List<Project> executorProjects;
 }

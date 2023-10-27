@@ -20,15 +20,35 @@ public class Employee {
     private String middleName;
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "company")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 
-    @OneToMany(mappedBy = "employees")
+    @ManyToMany(mappedBy = "employees")
     private List<Project> projects;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
-    List<Task> tasks;
+    @OneToMany(mappedBy = "author")
+    private List<Task> authoredTasks;
+
+    @OneToMany(mappedBy = "executor")
+    private List<Task> executedTasks;
+
+//    @ManyToOne
+//    @JoinColumn(name = "company")
+//    private Company company;
+
+//    @OneToMany(mappedBy = "employees")
+//    private List<Project> projects;
+//
+////    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee")
+////    List<Task> tasks;
+//
+//    @OneToMany(mappedBy = "author")
+//    private List<Task> authoredTasks;
+//
+//    @OneToMany(mappedBy = "executor")
+//    private List<Task> executedTasks;
+
 
 }
 
