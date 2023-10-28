@@ -1,4 +1,5 @@
 package com.example.project.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,10 +21,12 @@ public class Project {
 
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
     @JoinColumn(name = "customer_company_id", referencedColumnName = "id")
     private Company customerCompany;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JsonBackReference
     @JoinColumn(name = "executor_company_id", referencedColumnName = "id")
     private Company executorCompany;
 

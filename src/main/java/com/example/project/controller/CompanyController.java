@@ -21,8 +21,9 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public Company getCompanyById(@PathVariable Long id) {
-        return companyService.getCompanyById(id).get();
+    public CompanyDto getCompanyById(@PathVariable Long id) {
+        var company = companyService.getCompanyById(id).get();
+        return companyService.convertToDto(company);
     }
 
     @PostMapping

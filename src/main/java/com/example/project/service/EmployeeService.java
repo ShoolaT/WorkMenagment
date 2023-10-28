@@ -41,7 +41,7 @@ public class EmployeeService {
     public void deleteEmployee(Long id) {
         employeeRepository.deleteById(id);
     }
-    private EmployeeDto convertToDto(Employee employee) {
+    public EmployeeDto convertToDto(Employee employee) {
         var company = companyService.getCompanyById(employee.getCompany().getId());
         if(company.isEmpty()){
             throw new NoSuchElementException("Company not found with id: "+employee.getCompany());

@@ -1,6 +1,7 @@
 package com.example.project.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,9 +23,11 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Employee> employees;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "customerCompany")
     private List<Project> customerProjects;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "executorCompany")
     private List<Project> executorProjects;
 }

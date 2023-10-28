@@ -39,7 +39,7 @@ public class CompanyService {
 
     // Additional methods, if needed
 
-    private CompanyDto convertToDto(Company company) {
+    public CompanyDto convertToDto(Company company) {
         return CompanyDto.builder()
                 .id(company.getId())
                 .name(company.getName())

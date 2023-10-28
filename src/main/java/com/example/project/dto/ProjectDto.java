@@ -1,9 +1,7 @@
 package com.example.project.dto;
-import com.example.project.model.Employee;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 @Data
