@@ -20,7 +20,7 @@ public class Employee {
     private String middleName;
     private String email;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
 

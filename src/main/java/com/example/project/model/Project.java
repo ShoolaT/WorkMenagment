@@ -30,7 +30,7 @@ public class Project {
     private LocalDate endDate;
     private int priority;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Employee projectLeader;
     @ManyToMany
     @JoinTable(
