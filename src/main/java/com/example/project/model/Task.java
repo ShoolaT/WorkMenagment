@@ -13,7 +13,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String taskName;
+    private String name;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "author_id", referencedColumnName = "id")
@@ -29,10 +29,7 @@ public class Task {
     private String comment;
     private int priority;
     @ManyToOne
-    @JoinColumn(name = "project_id") // This assumes you have a 'project_id' column in the Task table
+    @JoinColumn(name = "project_id")
     private Project project;
-//    @ManyToOne
-//    //@JoinColumn(name = "project_id")
-//    private Project project;
 
 }

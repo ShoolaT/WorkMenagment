@@ -1,5 +1,6 @@
 package com.example.project.controller;
 
+import com.example.project.dto.EmployeeDto;
 import com.example.project.model.Employee;
 import com.example.project.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,24 +16,24 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable Long id) {
+    public EmployeeDto getEmployeeById(@PathVariable Long id) {
         return employeeService.getEmployeeById(id);
     }
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
+    public EmployeeDto createEmployee(@RequestBody EmployeeDto employeeDto) {
+        return employeeService.saveEmployee(employeeDto);
     }
 
-    @PostMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        employee.setId(id);
-        return employeeService.saveEmployee(employee);
+    @PutMapping("/{id}")
+    public EmployeeDto updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
+        employeeDto.setId(id);
+        return employeeService.saveEmployee(employeeDto);
     }
 
     @DeleteMapping("/{id}")

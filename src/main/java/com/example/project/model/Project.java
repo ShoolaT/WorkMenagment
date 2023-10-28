@@ -3,7 +3,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -16,7 +15,7 @@ public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String projectName;
+    private String name;
 
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -33,8 +32,6 @@ public class Project {
 
     @ManyToOne
     private Employee projectLeader;
-
-    //@ManyToMany(mappedBy = "projects")
     @ManyToMany
     @JoinTable(
             name = "employees_projects",
@@ -46,33 +43,5 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private List<Task> tasks;
 
-//    @ManyToOne
-//    @JoinColumn(name = "company_customer") // Assuming "company_id" is the foreign key in the Project table
-//    private Company customerCompany;
-//    @ManyToOne
-//    @JoinColumn(name = "company_executor") // Assuming "company_id" is the foreign key in the Project table
-//    private Company executorCompany;
-//
-//    private LocalDate startDate;
-//    private LocalDate endDate;
-//    private int priority;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "projectLeader")
-//    private Employee projectLeader;
-//
-////    @ManyToMany
-////    @JoinTable(
-////            name = "project_employee",
-////            joinColumns = @JoinColumn(name = "project_id"),
-////            inverseJoinColumns = @JoinColumn(name = "employee_id")
-////    )
-////    private List<Employee> employees;
-//
-//    @ManyToMany(mappedBy = "projects")
-//    private List<Employee> employees;
-//
-//    @OneToMany(mappedBy = "project")
-//    private List<Task> tasks;
 }
 

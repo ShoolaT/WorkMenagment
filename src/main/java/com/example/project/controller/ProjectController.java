@@ -1,6 +1,6 @@
 package com.example.project.controller;
 
-import com.example.project.model.Project;
+import com.example.project.dto.ProjectDto;
 import com.example.project.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +15,24 @@ public class ProjectController {
     private ProjectService projectService;
 
     @GetMapping
-    public List<Project> getAllProjects() {
+    public List<ProjectDto> getAllProjects() {
         return projectService.getAllProjects();
     }
 
     @GetMapping("/{id}")
-    public Project getProjectById(@PathVariable Long id) {
+    public ProjectDto getProjectById(@PathVariable Long id) {
         return projectService.getProjectById(id);
     }
 
     @PostMapping
-    public Project createProject(@RequestBody Project project) {
-        return projectService.saveProject(project);
+    public ProjectDto createProject(@RequestBody ProjectDto projectDto) {
+        return projectService.saveProject(projectDto);
     }
 
     @PostMapping("/{id}")
-    public Project updateProject(@PathVariable Long id, @RequestBody Project project) {
-        project.setId(id);
-        return projectService.saveProject(project);
+    public ProjectDto updateProject(@PathVariable Long id, @RequestBody ProjectDto projectDto) {
+        projectDto.setId(id);
+        return projectService.saveProject(projectDto);
     }
 
     @DeleteMapping("/{id}")
