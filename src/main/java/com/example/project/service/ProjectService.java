@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,9 +28,8 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
-    public ProjectDto getProjectById(Long id) {
-        Project project = projectRepository.findById(id).orElse(null);
-        return convertToDto(project);
+    public Optional<Project> getProjectById(Long id) {
+        return projectRepository.findById(id);
 //        return projectRepository.findById(id).orElse(null);
     }
 
@@ -44,7 +44,7 @@ public class ProjectService {
         projectRepository.deleteById(id);
     }
 
-    private ProjectDto convertToDto(Project project) {
+    public ProjectDto convertToDto(Project project) {
         var executor_company = companyService.getCompanyById(project.getExecutorCompany().getId());
         if (executor_company.isEmpty()) {
             throw new NoSuchElementException("Company not found with id: " + project.getExecutorCompany());
