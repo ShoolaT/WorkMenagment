@@ -19,6 +19,33 @@ public class ProjectController {
         return projectService.getAllProjects();
     }
 
+    @GetMapping("/sortByPriority")
+    public List<ProjectDto> sortByPriority() {
+        return projectService.sortByPriority();
+    }
+
+    @GetMapping("/sortByName")
+    public List<ProjectDto> sortByName() {
+        return projectService.sortByName();
+    }
+
+    @GetMapping("/sortByStartDate")
+    public List<ProjectDto> sortByStartDate() {
+        return projectService.sortByStartDate();
+    }
+
+    @GetMapping("/sortByEndDate")
+    public List<ProjectDto> sortByEndDate() {
+        return projectService.sortByEndDate();
+    }
+
+    @GetMapping("/sortByProjectLeader")
+    public List<ProjectDto> sortByProjectLeader() {
+        return projectService.sortByProjectLeader();
+    }
+
+
+
     @GetMapping("/{id}")
     public ProjectDto getProjectById(@PathVariable Long id) {
         var project = projectService.getProjectById(id).get();

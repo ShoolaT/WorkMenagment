@@ -37,7 +37,7 @@ public class CompanyService {
         companyRepository.deleteById(id);
     }
 
-    // Additional methods, if needed
+
 
     public CompanyDto convertToDto(Company company) {
         return CompanyDto.builder()

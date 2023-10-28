@@ -19,10 +19,36 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("/sortByPriority")
+    public List<TaskDto> sortByPriority() {
+        return taskService.sortByPriority();
+    }
+
+    @GetMapping("/sortByName")
+    public List<TaskDto> sortByName() {
+        return taskService.sortByName();
+    }
+
+    @GetMapping("/sortByAuthor")
+    public List<TaskDto> sortByAuthor() {
+        return taskService.sortByAuthor();
+    }
+
+    @GetMapping("/sortByExecutor")
+    public List<TaskDto> sortByExecutor() {
+        return taskService.sortByExecutor();
+    }
+    @GetMapping("/sortByStatus")
+    public List<TaskDto> sortByStatus() {
+        return taskService.sortByStatus();
+    }
+
     @GetMapping("/{id}")
     public TaskDto getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
     }
+
+
 
     @PostMapping
     public TaskDto createTask(@RequestBody TaskDto taskDto) {

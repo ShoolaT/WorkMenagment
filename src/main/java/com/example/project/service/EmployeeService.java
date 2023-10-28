@@ -22,9 +22,8 @@ public class EmployeeService {
     public List<EmployeeDto> getAllEmployees() {
         List<Employee> employees = employeeRepository.findAll();
         return employees.stream()
-                .map(this::convertToDto) // Convert entity to DTO
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
-//        return employeeRepository.findAll();
     }
 
     public Optional<Employee> getEmployeeById(Long id) {
@@ -35,7 +34,6 @@ public class EmployeeService {
         Employee employee = convertToEntity(employeeDto);
         employee = employeeRepository.save(employee);
         return convertToDto(employee);
-//        return employeeRepository.save(employee);
     }
 
     public void deleteEmployee(Long id) {

@@ -4,6 +4,7 @@ import com.example.project.dto.ProjectDto;
 import com.example.project.model.Project;
 import com.example.project.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,18 +25,55 @@ public class ProjectService {
     public List<ProjectDto> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
         return projects.stream()
-                .map(this::convertToDto) // Convert entity to DTO
+                .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
 
+    public List<ProjectDto> sortByPriority() {
+        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
+        return projects.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectDto> sortByStartDate() {
+        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
+        return projects.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectDto> sortByEndDate() {
+        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "endDate"));
+        return projects.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectDto> sortByProjectLeader() {
+        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "projectLeader"));
+        return projects.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectDto> sortByName() {
+        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
+        return projects.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
+
+
+
     public Optional<Project> getProjectById(Long id) {
         return projectRepository.findById(id);
-//        return projectRepository.findById(id).orElse(null);
     }
 
     public ProjectDto saveProject(ProjectDto projectDto) {
-//        return projectRepository.save(project);
-        Project project = convertToEntity(projectDto); // Convert DTO to entity
+        Project project = convertToEntity(projectDto);
         project = projectRepository.save(project);
         return convertToDto(project);
     }
@@ -59,7 +97,7 @@ public class ProjectService {
         }
         return ProjectDto.builder()
                 .id(project.getId())
-                .name(project.getName()) // Assuming project name is stored in projectName field
+                .name(project.getName())
                 .customerCompanyId(customer_company.get().getId())
                 .executorCompanyId(executor_company.get().getId())
                 .projectLeader(leaderProject.get().getId())
@@ -69,6 +107,8 @@ public class ProjectService {
                 .build();
 
     }
+
+
 
     private Project convertToEntity(ProjectDto projectDto) {
         var executor_company = companyService.getCompanyById(projectDto.getExecutorCompanyId());
@@ -85,7 +125,7 @@ public class ProjectService {
         }
         Project project = Project.builder()
                 .id(projectDto.getId())
-                .name(projectDto.getName()) // Assuming project name is stored in projectName field
+                .name(projectDto.getName())
                 .executorCompany(executor_company.get())
                 .customerCompany(customer_company.get())
                 .startDate(projectDto.getStartDate())
@@ -94,9 +134,9 @@ public class ProjectService {
                 .priority(projectDto.getPriority())
                 .build();
 
-        // Set other fields (customerCompany, executorCompany) as needed
         return project;
 
     }
+
 
 }
