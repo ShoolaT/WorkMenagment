@@ -1,15 +1,14 @@
 package com.example.project.service;
 
 import com.example.project.dto.EmployeeDto;
-import com.example.project.model.Company;
 import com.example.project.model.Employee;
-import com.example.project.repository.CompanyRepository;
 import com.example.project.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,10 +27,8 @@ public class EmployeeService {
 //        return employeeRepository.findAll();
     }
 
-    public EmployeeDto getEmployeeById(Long id) {
-        Employee employee = employeeRepository.findById(id).orElse(null);
-        return convertToDto(employee);
-//        return employeeRepository.findById(id).orElse(null);
+    public Optional<Employee> getEmployeeById(Long id) {
+        return employeeRepository.findById(id);
     }
 
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {

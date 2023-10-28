@@ -1,4 +1,5 @@
 package com.example.project.dto;
+import com.example.project.model.Employee;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -12,6 +13,7 @@ public class ProjectDto {
     private String name;
     private Long customerCompanyId;
     private Long executorCompanyId;
+    private Long projectLeader;
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date startDate;
     @JsonFormat(pattern="yyyy-MM-dd")

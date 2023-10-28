@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/companies")
@@ -22,8 +21,8 @@ public class CompanyController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Company> getCompanyById(@PathVariable Long id) {
-        return companyService.getCompanyById(id);
+    public Company getCompanyById(@PathVariable Long id) {
+        return companyService.getCompanyById(id).get();
     }
 
     @PostMapping
