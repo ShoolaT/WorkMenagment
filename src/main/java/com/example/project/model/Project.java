@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -26,8 +27,8 @@ public class Project {
     @JoinColumn(name = "executor_company_id", referencedColumnName = "id")
     private Company executorCompany;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private Date startDate;
+    private Date endDate;
     private int priority;
 
     @ManyToOne(cascade = CascadeType.MERGE)
