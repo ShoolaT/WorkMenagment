@@ -46,7 +46,7 @@ public class EmployeeService {
     }
     private EmployeeDto convertToDto(Employee employee) {
         var company = companyService.getCompanyById(employee.getCompany().getId());
-        if(company.isPresent()){
+        if(company.isEmpty()){
             throw new NoSuchElementException("Company not found with id: "+employee.getCompany());
         }
         return EmployeeDto.builder()
@@ -61,7 +61,7 @@ public class EmployeeService {
 
     private Employee convertToEntity(EmployeeDto employeeDto) {
         var company = companyService.getCompanyById(employeeDto.getCompanyId());
-        if(company.isPresent()){
+        if(company.isEmpty()){
             throw new NoSuchElementException("Company not found id: "+employeeDto.getCompanyId());
         }
         return Employee.builder()
