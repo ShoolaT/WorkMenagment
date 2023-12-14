@@ -3,20 +3,24 @@ package com.example.project.service;
 import com.example.project.dto.EmployeeDto;
 import com.example.project.model.Employee;
 import com.example.project.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.project.repository.RoleRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    @Autowired
-    private CompanyService companyService;
+    private final EmployeeRepository employeeRepository;
+    private final CompanyService companyService;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
 
 
     public List<EmployeeDto> getAllEmployees() {
@@ -31,10 +35,26 @@ public class EmployeeService {
         return employeeRepository.findById(id);
     }
 
-    public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
-        Employee employee = convertToEntity(employeeDto);
-        employee = employeeRepository.save(employee);
-        return convertToDto(employee);
+    public void saveEmployee(EmployeeDto employeeDto) {
+        var company = companyService.getCompanyById(employeeDto.getCompanyId());
+        if(company.isEmpty()){
+            throw new NoSuchElementException("Company not found id: "+employeeDto.getCompanyId());
+        }
+        var employee = Employee.builder()
+                .email(employeeDto.getEmail())
+                .firstName(employeeDto.getFirstName())
+                .lastName(employeeDto.getLastName())
+                .middleName(employeeDto.getMiddleName())
+                .password(encoder.encode(employeeDto.getPassword()))
+                .enabled(Boolean.TRUE)
+                .company(company.get())
+                .roles(new HashSet<>())
+                .build();
+        employee.addRole(roleRepository.findByRole("ROLE_USER"));
+//        Employee employee = convertToEntity(employeeDto);
+//        employee = employeeRepository.save(employee);
+        employeeRepository.saveAndFlush(employee);
+//        return convertToDto(employee);
 //        return employeeRepository.save(employee);
     }
 
