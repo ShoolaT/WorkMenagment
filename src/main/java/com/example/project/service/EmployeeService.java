@@ -4,7 +4,6 @@ import com.example.project.dto.EmployeeDto;
 import com.example.project.model.Employee;
 import com.example.project.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +13,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
@@ -25,6 +28,17 @@ public class EmployeeService {
     }
     private Page<EmployeeDto> toPage(List<Employee> employees, Pageable pageable) {
         var list = employees.stream()
+    public Employee findByEmail(String email) {
+        return employeeRepository.findOneByEmailIgnoreCase(email).orElse(null);
+    }
+    public Optional<Employee> findOneByEmail(String email) {
+        return employeeRepository.findOneByEmailIgnoreCase(email);
+    }
+
+
+    public List<EmployeeDto> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream()
                 .map(this::convertToDto)
                 .toList();
         if (pageable.getOffset() >= list.size()) {
@@ -55,6 +69,10 @@ public class EmployeeService {
 
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
         Employee employee = convertToEntity(employeeDto);
+
+
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+
         employee = employeeRepository.save(employee);
         return convertToDto(employee);
     }
