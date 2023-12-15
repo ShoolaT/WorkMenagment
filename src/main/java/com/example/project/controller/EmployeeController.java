@@ -1,45 +1,76 @@
 package com.example.project.controller;
 
+import com.example.project.dto.CompanyDto;
 import com.example.project.dto.EmployeeDto;
-import com.example.project.model.Employee;
+import com.example.project.service.CompanyService;
 import com.example.project.service.EmployeeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/employees")
+@RequiredArgsConstructor
+@Slf4j
 public class EmployeeController {
-
-    @Autowired
-    private EmployeeService employeeService;
-
-    @GetMapping
-    public List<EmployeeDto> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    private final EmployeeService employeeService;
+    private final CompanyService companyService;
+    @GetMapping("/create")
+    public String createShowEmployee(Model model) {
+        List<CompanyDto> companies = companyService.getAllCompanies();
+        model.addAttribute("companies", companies);
+        return "employees/createEmployee";
+    }
+    @PostMapping("/create")
+    public String createEmployee(@ModelAttribute EmployeeDto employeeDto) {
+        employeeService.saveEmployee(employeeDto);
+        return "redirect:/employees/all";
     }
 
+    @GetMapping("/all")
+    public String getAllEmployees(Model model) {
+        var employees = employeeService.getEmployees(0,9,"id");
+        model.addAttribute("employees", employees);
+        model.addAttribute("companies", companyService.getAllCompanies());
+        return "employees/allEmployees";
+    }
     @GetMapping("/{id}")
-    public EmployeeDto getEmployeeById(@PathVariable Long id) {
-        var employee = employeeService.getEmployeeById(id).get();
-        return employeeService.convertToDto(employee);
+    public String getEmployeeById(@PathVariable Long id, Model model) {
+        EmployeeDto employee = employeeService.getEmployeeById(id);
+        CompanyDto companyDto = companyService.getCompany(employee.getCompanyId());
+        model.addAttribute("employee", employee);
+        model.addAttribute("company",companyDto);
+        return "employees/getEmployee";
     }
-
-    @PostMapping
-    public EmployeeDto createEmployee(@RequestBody EmployeeDto employeeDto) {
-        return employeeService.saveEmployee(employeeDto);
-    }
-
-    @PutMapping("/{id}")
-    public EmployeeDto updateEmployee(@PathVariable Long id, @RequestBody EmployeeDto employeeDto) {
+    @PostMapping("/{id}/edit")
+    public String updateEmployee(@PathVariable Long id, @ModelAttribute EmployeeDto employeeDto) {
         employeeDto.setId(id);
-        return employeeService.saveEmployee(employeeDto);
+        employeeService.updateEmployee(employeeDto);
+        return "redirect:/employees/"+employeeDto.getId();
+    }
+    @GetMapping("/{id}/edit")
+    public String updateShowEmployee(@PathVariable Long id, Model model) {
+        EmployeeDto employeeDto = employeeService.getEmployeeById(id);
+        CompanyDto companyDto = companyService.getCompany(employeeDto.getCompanyId());
+        if (employeeDto != null) {
+            model.addAttribute("employeeDto", employeeDto);
+            model.addAttribute("companies",companyService.getAllCompanies());
+        } else {
+            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return "employees/updateEmployee";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteEmployee(@PathVariable Long id) {
+    @GetMapping("/{id}/delete")
+    public String deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
+        return "redirect:/employees/all";
     }
 
 }

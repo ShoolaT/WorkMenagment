@@ -2,16 +2,15 @@ package com.example.project.controller;
 
 import com.example.project.dto.TaskDto;
 import com.example.project.service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/tasks")
 public class TaskController {
-
-    @Autowired
     private TaskService taskService;
 
     @GetMapping

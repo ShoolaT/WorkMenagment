@@ -2,17 +2,16 @@ package com.example.project.controller;
 
 import com.example.project.dto.ProjectDto;
 import com.example.project.service.ProjectService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/projects")
+@RequiredArgsConstructor
 public class ProjectController {
-
-    @Autowired
-    private ProjectService projectService;
+    private final ProjectService projectService;
 
     @GetMapping
     public List<ProjectDto> getAllProjects() {

@@ -80,11 +80,11 @@ public class TaskService {
 
 
     private TaskDto convertToDto(Task task) {
-        var executor = employeeService.getEmployeeById(task.getExecutor().getId());
+        var executor = employeeService.getEmployee(task.getExecutor().getId());
         if (executor.isEmpty()) {
             throw new NoSuchElementException("Executor not found with id: " + task.getExecutor().getId());
         }
-        var author = employeeService.getEmployeeById(task.getAuthor().getId());
+        var author = employeeService.getEmployee(task.getAuthor().getId());
         if (author.isEmpty()) {
             throw new NoSuchElementException("Author not found with id: " + task.getAuthor().getId());
         }
@@ -105,11 +105,11 @@ public class TaskService {
     }
 
     private Task convertToEntity(TaskDto taskDto) {
-        var executor = employeeService.getEmployeeById(taskDto.getExecutorId());
+        var executor = employeeService.getEmployee(taskDto.getExecutorId());
         if (executor.isEmpty()) {
             throw new NoSuchElementException("Executor not found with id: " + taskDto.getExecutorId());
         }
-        var author = employeeService.getEmployeeById(taskDto.getAuthorId());
+        var author = employeeService.getEmployee(taskDto.getAuthorId());
         if (author.isEmpty()) {
             throw new NoSuchElementException("Author not found with id: " + taskDto.getAuthorId());
         }

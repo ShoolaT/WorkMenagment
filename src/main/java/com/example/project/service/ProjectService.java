@@ -92,15 +92,12 @@ public class ProjectService {
             throw new NoSuchElementException("Company not found with id: " + project.getCustomerCompany());
         }
         var leaderProject = employeeService.getEmployeeById(project.getProjectLeader().getId());
-        if (leaderProject.isEmpty()) {
-            throw new NoSuchElementException("Leader not found with id: " + project.getProjectLeader().getId());
-        }
         return ProjectDto.builder()
                 .id(project.getId())
                 .name(project.getName())
                 .customerCompanyId(customer_company.get().getId())
                 .executorCompanyId(executor_company.get().getId())
-                .projectLeader(leaderProject.get().getId())
+                .projectLeader(leaderProject.getId())
                 .startDate(project.getStartDate())
                 .endDate(project.getEndDate())
                 .priority(project.getPriority())
@@ -119,10 +116,7 @@ public class ProjectService {
         if (customer_company.isEmpty()) {
             throw new NoSuchElementException("Company not found with id: " + projectDto.getCustomerCompanyId());
         }
-        var leaderProject = employeeService.getEmployeeById(projectDto.getProjectLeader());
-        if (leaderProject.isEmpty()) {
-            throw new NoSuchElementException("Leader not found with id: " + projectDto.getProjectLeader());
-        }
+        var leaderProject = employeeService.getEmployee(projectDto.getProjectLeader());
         Project project = Project.builder()
                 .id(projectDto.getId())
                 .name(projectDto.getName())

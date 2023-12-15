@@ -1,19 +1,17 @@
 package com.example.project.controller;
 
 import com.example.project.dto.CompanyDto;
-import com.example.project.model.Company;
 import com.example.project.service.CompanyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/companies")
 public class CompanyController {
-
-    @Autowired
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
     @GetMapping
     public List<CompanyDto> getAllCompanies() {

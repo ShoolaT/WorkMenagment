@@ -3,6 +3,7 @@ package com.example.project.service;
 import com.example.project.dto.CompanyDto;
 import com.example.project.model.Company;
 import com.example.project.repository.CompanyRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +12,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CompanyService {
 
-    @Autowired
-    private CompanyRepository companyRepository;
+    private final CompanyRepository companyRepository;
 
     public List<CompanyDto> getAllCompanies() {
         List<Company> companies = companyRepository.findAll();
@@ -23,8 +24,13 @@ public class CompanyService {
                 .collect(Collectors.toList());
     }
 
+    public CompanyDto getCompany(Long id) {
+       var company = companyRepository.findById(id).get();
+        return convertToDto(company);
+    }
+
     public Optional<Company> getCompanyById(Long id) {
-       return companyRepository.findById(id);
+        return companyRepository.findById(id);
     }
 
     public CompanyDto saveCompany(CompanyDto companyDto) {
