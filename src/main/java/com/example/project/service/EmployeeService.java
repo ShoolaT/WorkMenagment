@@ -4,6 +4,7 @@ import com.example.project.dto.EmployeeDto;
 import com.example.project.model.Employee;
 import com.example.project.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,10 +14,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
     private CompanyService companyService;
+
+    public Employee findByEmail(String email) {
+        return employeeRepository.findOneByEmailIgnoreCase(email).orElse(null);
+    }
+    public Optional<Employee> findOneByEmail(String email) {
+        return employeeRepository.findOneByEmailIgnoreCase(email);
+    }
 
 
     public List<EmployeeDto> getAllEmployees() {
@@ -32,6 +44,10 @@ public class EmployeeService {
 
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
         Employee employee = convertToEntity(employeeDto);
+
+
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+
         employee = employeeRepository.save(employee);
         return convertToDto(employee);
     }
