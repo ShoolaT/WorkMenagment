@@ -81,6 +81,7 @@ public class EmployeeService {
                 .lastName(employeeDto.getLastName())
                 .middleName(employeeDto.getMiddleName())
                 .email(employeeDto.getEmail())
+                .password(employeeDto.getPassword())
                 .company(company.get())
                 .build();
     }
