@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Email;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmployeeDto {
     private Long id;
     @NotBlank
@@ -17,5 +19,7 @@ public class EmployeeDto {
     @Email
     private String email;
     private Long companyId;
+
+    private String password;
 }
 
