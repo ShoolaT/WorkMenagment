@@ -4,6 +4,8 @@ import com.example.project.dto.EmployeeDto;
 import com.example.project.model.Employee;
 import com.example.project.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,23 +24,18 @@ public class EmployeeService {
     @Autowired
     private CompanyService companyService;
 
-    public Page<EmployeeDto> getEmployees(int page, int size, String sort) {
-        var list = employeeRepository.findAll(PageRequest.of(page, size, Sort.by(sort)));
-        return toPage(list.getContent(), PageRequest.of(list.getNumber(), list.getSize(), list.getSort()));
-    }
-    private Page<EmployeeDto> toPage(List<Employee> employees, Pageable pageable) {
-        var list = employees.stream()
     public Employee findByEmail(String email) {
         return employeeRepository.findOneByEmailIgnoreCase(email).orElse(null);
     }
     public Optional<Employee> findOneByEmail(String email) {
         return employeeRepository.findOneByEmailIgnoreCase(email);
     }
-
-
-    public List<EmployeeDto> getAllEmployees() {
-        List<Employee> employees = employeeRepository.findAll();
-        return employees.stream()
+    public Page<EmployeeDto> getEmployees(int page, int size, String sort) {
+        var list = employeeRepository.findAll(PageRequest.of(page, size, Sort.by(sort)));
+        return toPage(list.getContent(), PageRequest.of(list.getNumber(), list.getSize(), list.getSort()));
+    }
+    private Page<EmployeeDto> toPage(List<Employee> employees, Pageable pageable) {
+        var list = employees.stream()
                 .map(this::convertToDto)
                 .toList();
         if (pageable.getOffset() >= list.size()) {
