@@ -1,21 +1,32 @@
 package com.example.project.dto;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
 public class ProjectDto {
     private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private Long customerCompanyId;
+    @NotBlank
     private Long executorCompanyId;
+    @NotBlank
     private Long projectLeader;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date startDate;
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private Date endDate;
+    @NotBlank
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
+    private String startDate;
+
+    @NotBlank
+    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
+    private String endDate;
+    @NotBlank
+    @Size(min = 4, max = 10)
     private int priority;
 }
 

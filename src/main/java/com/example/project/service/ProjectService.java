@@ -68,8 +68,9 @@ public class ProjectService {
 
 
 
-    public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
+    public ProjectDto getProjectById(Long id) {
+        var project = projectRepository.findById(id).get();
+        return convertToDto(project);
     }
 
     public ProjectDto saveProject(ProjectDto projectDto) {
@@ -107,7 +108,7 @@ public class ProjectService {
 
 
 
-    private Project convertToEntity(ProjectDto projectDto) {
+    public Project convertToEntity(ProjectDto projectDto) {
         var executor_company = companyService.getCompanyById(projectDto.getExecutorCompanyId());
         if (executor_company.isEmpty()) {
             throw new NoSuchElementException("Company not found with id: " + projectDto.getExecutorCompanyId());

@@ -30,8 +30,8 @@ public class Project {
     @JoinColumn(name = "executor_company_id", referencedColumnName = "id")
     private Company executorCompany;
 
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private int priority;
 
     @ManyToOne(cascade = CascadeType.MERGE)

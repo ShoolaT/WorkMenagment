@@ -3,7 +3,7 @@ package com.example.project.service;
 import com.example.project.dto.EmployeeDto;
 import com.example.project.model.Employee;
 import com.example.project.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService {
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    @Autowired
-    private CompanyService companyService;
+    private final EmployeeRepository employeeRepository;
+    private final CompanyService companyService;
 
     public Page<EmployeeDto> getEmployees(int page, int size, String sort) {
         var list = employeeRepository.findAll(PageRequest.of(page, size, Sort.by(sort)));
@@ -38,12 +37,13 @@ public class EmployeeService {
         return new PageImpl<>(subList, pageable, list.size());
     }
 
-//    public List<EmployeeDto> getAllEmployees() {
-//        List<Employee> employees = employeeRepository.findAll();
-//        return employees.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
+    public List<EmployeeDto> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 
     public EmployeeDto getEmployeeById(Long id) {
         var employee = employeeRepository.findById(id).get();
@@ -59,9 +59,9 @@ public class EmployeeService {
         return convertToDto(employee);
     }
     public EmployeeDto updateEmployee(EmployeeDto employeeDto) {
-        boolean existingEmmployee = employeeRepository.existsById(employeeDto.getId());
-        if(existingEmmployee == Boolean.FALSE){
-            throw new IllegalArgumentException("Employee with name " + employeeDto.getFirstName() + " not found.");
+        boolean existingEmployee = employeeRepository.existsById(employeeDto.getId());
+        if(!existingEmployee){
+            throw new NoSuchElementException("Employee with name " + employeeDto.getFirstName() + " not found.");
         }
         Employee employee = convertToEntity(employeeDto);
         employee = employeeRepository.save(employee);
