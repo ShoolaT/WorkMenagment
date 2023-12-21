@@ -34,8 +34,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public String getAllEmployees(Model model) {
-        var employees = employeeService.getEmployees(0,9,"id");
+    public String getAllEmployees(Model model,
+                                  @RequestParam(name = "sort", defaultValue = "id") String sortCriteria) {
+        var employees = employeeService.getEmployees(0,9,sortCriteria);
         model.addAttribute("employees", employees);
         model.addAttribute("companies", companyService.getAllCompanies());
         return "employees/allEmployees";
@@ -72,5 +73,4 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return "redirect:/employees/all";
     }
-
 }

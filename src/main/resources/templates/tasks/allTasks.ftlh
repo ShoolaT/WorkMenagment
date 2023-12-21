@@ -1,6 +1,20 @@
 <#import "../layout.ftlh" as main>
 <@main.layout>
-    <h2>Employee List</h2>
+    <h2>Tasks List</h2>
+
+    <div class="mt-3">
+        <div class="dropdown">
+            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="/tasks/all?sort=name">Name</a></li>
+                <li><a class="dropdown-item" href="/tasks/all?sort=status">Status</a></li>
+                <li><a class="dropdown-item" href="/tasks/all?sort=priority">Priority</a></li>
+            </ul>
+        </div>
+    </div>
+
 
     <div class="row justify-content-around">
         <#list tasks.content as task>

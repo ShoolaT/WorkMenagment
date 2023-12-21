@@ -42,11 +42,10 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-    public String getAllTasks(Model model) {
-        var tasks = taskService.getTasks(0, 9, "id");
+    public String getAllTasks(Model model,
+                              @RequestParam(name = "sort", defaultValue = "id") String sortCriteria) {
+        var tasks = taskService.getTasks(0, 9, sortCriteria);
         model.addAttribute("tasks", tasks);
-//        model.addAttribute("employees", employeeService.getAllEmployees());
-//        model.addAttribute("projects", projectService.getAllProjects());
         return "tasks/allTasks";
     }
 
