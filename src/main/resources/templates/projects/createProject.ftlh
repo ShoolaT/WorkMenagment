@@ -51,14 +51,14 @@
                 <input type="number" class="form-control" id="priority" name="priority" required>
             </div>
 
-            <div class="form-group">
-                <label for="employees">Add Employees:</label>
-                <select multiple class="form-control" id="employees" name="employees">
-                    <#list employees as employee>
-                        <option value="${employee.id}">${employee.firstName} ${employee.lastName}</option>
-                    </#list>
-                </select>
-            </div>
+<#--            <div class="form-group">-->
+<#--                <label for="employees">Add Employees:</label>-->
+<#--                <select multiple class="form-control" id="employees" name="employees">-->
+<#--                    <#list employees as employee>-->
+<#--                        <option value="${employee.id}">${employee.firstName} ${employee.lastName}</option>-->
+<#--                    </#list>-->
+<#--                </select>-->
+<#--            </div>-->
 
             <div class="mt-2">
                 <button type="submit" class="btn btn-primary">Create Project</button>

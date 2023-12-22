@@ -44,7 +44,7 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public String getEmployeeById(@PathVariable Long id, Model model) {
         EmployeeDto employee = employeeService.getEmployeeById(id);
-        CompanyDto companyDto = companyService.getCompany(employee.getCompanyId());
+        CompanyDto companyDto = companyService.getCompanyById(employee.getCompanyId());
         model.addAttribute("employee", employee);
         model.addAttribute("company",companyDto);
         return "employees/getEmployee";
@@ -58,7 +58,7 @@ public class EmployeeController {
     @GetMapping("/{id}/edit")
     public String updateShowEmployee(@PathVariable Long id, Model model) {
         EmployeeDto employeeDto = employeeService.getEmployeeById(id);
-        CompanyDto companyDto = companyService.getCompany(employeeDto.getCompanyId());
+        CompanyDto companyDto = companyService.getCompanyById(employeeDto.getCompanyId());
         if (employeeDto != null) {
             model.addAttribute("employeeDto", employeeDto);
             model.addAttribute("companies",companyService.getAllCompanies());

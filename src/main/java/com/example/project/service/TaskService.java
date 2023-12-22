@@ -39,46 +39,12 @@ public class TaskService {
         return new PageImpl<>(subList, pageable, list.size());
     }
 
-    public List<TaskDto> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
-        return tasks.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-//    public List<TaskDto> sortByPriority() {
-//        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
+//    public List<TaskDto> getAllTasks() {
+//        List<Task> tasks = taskRepository.findAll();
 //        return tasks.stream()
 //                .map(this::convertToDto)
 //                .collect(Collectors.toList());
 //    }
-//    public List<TaskDto> sortByName() {
-//        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
-//        return tasks.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
-//    public List<TaskDto> sortByAuthor() {
-//        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "author_id"));
-//        return tasks.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public List<TaskDto> sortByExecutor() {
-//        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "executor_id"));
-//        return tasks.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public List<TaskDto> sortByStatus() {
-//        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "status"));
-//        return tasks.stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
-
     public TaskDto getTaskById(Long id) {
         Task task = taskRepository.findById(id).orElse(null);
         return convertToDto(task);
@@ -162,5 +128,11 @@ public class TaskService {
                 .project(projectService.convertToEntity(project))
                 .build();
         return task;
+    }
+    public List<TaskDto> getTasksByProjectId(Long projectId) {
+        List<Task> tasks = taskRepository.findByProjectId(projectId);
+        return tasks.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }

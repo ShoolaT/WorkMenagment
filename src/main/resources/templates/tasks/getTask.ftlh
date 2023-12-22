@@ -2,7 +2,7 @@
 <@main.layout>
     <h2>Task Details</h2>
 
-    <div class="card">
+<#--    <div class="card">-->
         <div class="card-body">
             <h5 class="card-title">${task.name}</h5>
             <p class="card-text">Author: ${task.authorId.firstName} ${task.authorId.lastName}</p>
@@ -12,7 +12,7 @@
             <p class="card-text">Priority: ${task.priority}</p>
             <p class="card-text">Project: ${task.projectId.name}</p>
         </div>
-    </div>
+<#--    </div>-->
 
     <div class="mt-3">
         <a href="/tasks/all" class="btn btn-primary">Back to Tasks List</a>

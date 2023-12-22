@@ -1,5 +1,6 @@
 package com.example.project.service;
 
+import com.example.project.dto.CompanyDto;
 import com.example.project.dto.EmployeeDto;
 import com.example.project.model.Employee;
 import com.example.project.repository.EmployeeRepository;
@@ -72,7 +73,7 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
     public EmployeeDto convertToDto(Employee employee) {
-        var company = companyService.getCompany(employee.getCompany().getId());
+        var company = companyService.getCompanyById(employee.getCompany().getId());
         return EmployeeDto.builder()
                 .id(employee.getId())
                 .firstName(employee.getFirstName())
@@ -84,7 +85,7 @@ public class EmployeeService {
     }
 
     private Employee convertToEntity(EmployeeDto employeeDto) {
-        var company = companyService.getCompanyById(employeeDto.getCompanyId());
+        var company = companyService.getCompany(employeeDto.getCompanyId());
         if(company.isEmpty()){
             throw new NoSuchElementException("Company not found id: "+employeeDto.getCompanyId());
         }
@@ -96,5 +97,17 @@ public class EmployeeService {
                 .email(employeeDto.getEmail())
                 .company(company.get())
                 .build();
+    }
+    public List<EmployeeDto> getEmployeesByCompanyId(Long companyId) {
+        List<Employee> employees = employeeRepository.findByCompanyId(companyId);
+        return employees.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+    public List<EmployeeDto> getEmployeesByProjectId(Long projectId) {
+        List<Employee> employees = employeeRepository.findByProjects_Id(projectId);
+        return employees.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }

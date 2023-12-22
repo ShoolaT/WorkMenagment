@@ -52,14 +52,7 @@ public class TaskController {
     @GetMapping("/{id}")
     public String getTaskById(@PathVariable Long id, Model model) {
         TaskDto taskDto = taskService.getTaskById(id);
-//        EmployeeDto employeeExecutor = employeeService.getEmployeeById(taskDto.getExecutorId());
-//        EmployeeDto employeeAuthor = employeeService.getEmployeeById(taskDto.getAuthorId());
-//        ProjectDto projectDto = projectService.getProjectById(taskDto.getProjectId());
-
         model.addAttribute("task", taskDto);
-//        model.addAttribute("employeeExecutor", employeeExecutor);
-//        model.addAttribute("employeeAuthor",employeeAuthor);
-//        model.addAttribute("project", projectDto);
         return "tasks/getTask";
     }
     @PostMapping("/{id}/edit")
@@ -71,10 +64,6 @@ public class TaskController {
     @GetMapping("/{id}/edit")
     public String updateShowTask(@PathVariable Long id, Model model) {
        TaskDto taskDto = taskService.getTaskById(id);
-//        EmployeeDto employeeExecutor = employeeService.getEmployeeById(taskDto.getExecutorId());
-//        EmployeeDto employeeAuthor = employeeService.getEmployeeById(taskDto.getAuthorId());
-//        ProjectDto projectDto = projectService.getProjectById(taskDto.getProjectId());
-
         if (taskDto != null) {
             model.addAttribute("task", taskDto);
             model.addAttribute("employees", employeeService.getAllEmployees());
@@ -90,30 +79,5 @@ public class TaskController {
         taskService.deleteTask(id);
         return "redirect:/tasks/all";
     }
-
-//    @GetMapping("/sortByPriority")
-//    public List<TaskDto> sortByPriority() {
-//        return taskService.sortByPriority();
-//    }
-//
-//    @GetMapping("/sortByName")
-//    public List<TaskDto> sortByName() {
-//        return taskService.sortByName();
-//    }
-//
-//    @GetMapping("/sortByAuthor")
-//    public List<TaskDto> sortByAuthor() {
-//        return taskService.sortByAuthor();
-//    }
-//
-//    @GetMapping("/sortByExecutor")
-//    public List<TaskDto> sortByExecutor() {
-//        return taskService.sortByExecutor();
-//    }
-//    @GetMapping("/sortByStatus")
-//    public List<TaskDto> sortByStatus() {
-//        return taskService.sortByStatus();
-//    }
-
 }
 

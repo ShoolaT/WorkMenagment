@@ -2,41 +2,67 @@ package com.example.project.controller;
 
 import com.example.project.dto.CompanyDto;
 import com.example.project.service.CompanyService;
+import com.example.project.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/companies")
 public class CompanyController {
     private final CompanyService companyService;
+    private final EmployeeService employeeService;
+    @GetMapping("/create")
+    public String createShowCompany(){
+        return "companies/createCompany";
+    }
 
-    @GetMapping
-    public List<CompanyDto> getAllCompanies() {
-        return companyService.getAllCompanies();
+    @PostMapping("/create")
+    public String createCompany(@ModelAttribute CompanyDto companyDto) {
+        companyService.saveCompany(companyDto);
+        return "redirect:/companies/all";
+    }
+
+    @GetMapping("/all")
+    public String getAllCompanies(Model model,
+                                  @RequestParam(name = "sort", defaultValue = "id") String sortCriteria) {
+        var companies = companyService.getCompanies(0,9,sortCriteria);
+        model.addAttribute("companies",companies);
+        return "companies/allCompanies";
     }
 
     @GetMapping("/{id}")
-    public CompanyDto getCompanyById(@PathVariable Long id) {
-        var company = companyService.getCompanyById(id).get();
-        return companyService.convertToDto(company);
+    public String getCompanyById(@PathVariable Long id, Model model) {
+        CompanyDto company = companyService.getCompanyById(id);
+        model.addAttribute("employees", employeeService.getEmployeesByCompanyId(company.getId()));
+        model.addAttribute("company", company);
+        return "companies/getCompany";
     }
 
-    @PostMapping
-    public CompanyDto createCompany(@RequestBody CompanyDto companyDto) {
-        return companyService.saveCompany(companyDto);
-    }
 
-    @PutMapping("/{id}")
-    public CompanyDto updateCompany(@PathVariable Long id, @RequestBody CompanyDto companyDto) {
+    @PostMapping("/{id}/edit")
+    public String updateCompany(@PathVariable Long id, @ModelAttribute CompanyDto companyDto) {
         companyDto.setId(id);
-        return companyService.saveCompany(companyDto);
+        companyService.saveCompany(companyDto);
+        return "redirect:/companies/" + companyDto.getId();
     }
-
-    @DeleteMapping("/{id}")
-    public void deleteCompany(@PathVariable Long id) {
+    @GetMapping("/{id}/edit")
+    public String updateShowCompany(@PathVariable Long id, Model model) {
+        CompanyDto companyDto = companyService.getCompanyById(id);
+        if (companyDto != null) {
+            model.addAttribute("company", companyDto);
+        } else {
+            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return "companies/updateCompany";
+    }
+    @GetMapping("/{id}/delete")
+    public String deleteCompany(@PathVariable Long id) {
         companyService.deleteCompany(id);
+        return "redirect:/companies/all";
     }
 }
