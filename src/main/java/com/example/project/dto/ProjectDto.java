@@ -27,7 +27,7 @@ public class ProjectDto {
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}")
     private String endDate;
     @NotBlank
-    @Size(min = 4, max = 10)
+    @Size(min = 1, max = 10)
     private int priority;
 }
 

@@ -1,6 +1,8 @@
 package com.example.project.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -25,6 +27,10 @@ public class Employee {
     @Email
     @Column(nullable = false, unique = true)
     private String email;
+    @Size(min = 4, max = 24,
+            message = "Length of password must be >= 4 and <= 24")
+    @Pattern(regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).+$",
+            message = "Password should contain at least one uppercase letter, one number")
     @Column(nullable = false)
     private String password;
     @ManyToOne(cascade = CascadeType.MERGE)

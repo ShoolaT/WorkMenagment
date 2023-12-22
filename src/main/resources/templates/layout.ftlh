@@ -35,6 +35,26 @@
                     <a class="nav-link" href="/">Home<span class="sr-only"></span></a>
                 </li>
             </ul>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/employees/all">Employees<span class="sr-only"></span></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/companies/all">Companies<span class="sr-only"></span></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/tasks/all">Tasks<span class="sr-only"></span></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/projects/all">Projects<span class="sr-only"></span></a>
+                </li>
+            </ul>
 
             <ul class="navbar-nav">
                                 <#if user??>
