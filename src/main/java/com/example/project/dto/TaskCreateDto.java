@@ -1,17 +1,18 @@
 package com.example.project.dto;
 
 import com.example.project.enums.TaskStatus;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
-public class TaskDto {
+public class TaskCreateDto {
     private Long id;
     private String name;
-    private EmployeeDto authorId;//должен быть я
-    private EmployeeDto executorId;
+    private Long authorId;//должен быть я
+    private Long executorId;
     private TaskStatus status;
     private String comment;
     private int priority;
-    private ProjectDto projectId;
+    private Long projectId;
 }

@@ -34,8 +34,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public String getAllEmployees(Model model) {
-        var employees = employeeService.getEmployees(0,9,"id");
+    public String getAllEmployees(Model model,
+                                  @RequestParam(name = "sort", defaultValue = "id") String sortCriteria) {
+        var employees = employeeService.getEmployees(0,9,sortCriteria);
         model.addAttribute("employees", employees);
         model.addAttribute("companies", companyService.getAllCompanies());
         return "employees/allEmployees";
@@ -43,7 +44,7 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public String getEmployeeById(@PathVariable Long id, Model model) {
         EmployeeDto employee = employeeService.getEmployeeById(id);
-        CompanyDto companyDto = companyService.getCompany(employee.getCompanyId());
+        CompanyDto companyDto = companyService.getCompanyById(employee.getCompanyId());
         model.addAttribute("employee", employee);
         model.addAttribute("company",companyDto);
         return "employees/getEmployee";
@@ -57,7 +58,7 @@ public class EmployeeController {
     @GetMapping("/{id}/edit")
     public String updateShowEmployee(@PathVariable Long id, Model model) {
         EmployeeDto employeeDto = employeeService.getEmployeeById(id);
-        CompanyDto companyDto = companyService.getCompany(employeeDto.getCompanyId());
+        CompanyDto companyDto = companyService.getCompanyById(employeeDto.getCompanyId());
         if (employeeDto != null) {
             model.addAttribute("employeeDto", employeeDto);
             model.addAttribute("companies",companyService.getAllCompanies());
@@ -72,5 +73,4 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return "redirect:/employees/all";
     }
-
 }

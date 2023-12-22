@@ -1,12 +1,11 @@
 package com.example.project.service;
 
-import com.example.project.dto.ProjectDto;
+import com.example.project.dto.TaskCreateDto;
 import com.example.project.dto.TaskDto;
-import com.example.project.model.Project;
 import com.example.project.model.Task;
 import com.example.project.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,62 +13,54 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
+    private final TaskRepository taskRepository;
+    private final EmployeeService employeeService;
+    private final ProjectService projectService;
 
-    @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
-    private EmployeeService employeeService;
-    @Autowired
-    private ProjectService projectService;
-
-    public List<TaskDto> getAllTasks() {
-        List<Task> tasks = taskRepository.findAll();
-        return tasks.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public Page<TaskDto> getTasks(int page, int size, String sort) {
+        var list = taskRepository.findAll(PageRequest.of(page, size, Sort.by(sort)));
+        return toPage(list.getContent(), PageRequest.of(list.getNumber(), list.getSize(), list.getSort()));
     }
 
-    public List<TaskDto> sortByPriority() {
-        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
-        return tasks.stream()
+    private Page<TaskDto> toPage(List<Task> tasks, Pageable pageable) {
+        var list = tasks.stream()
                 .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-    public List<TaskDto> sortByName() {
-        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
-        return tasks.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-    public List<TaskDto> sortByAuthor() {
-        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "author_id"));
-        return tasks.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+                .toList();
+        if (pageable.getOffset() >= list.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize()) > list.size() ?
+                list.size() :
+                pageable.getOffset() + pageable.getPageSize());
+        List<TaskDto> subList = list.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, list.size());
     }
 
-    public List<TaskDto> sortByExecutor() {
-        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "executor_id"));
-        return tasks.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<TaskDto> sortByStatus() {
-        List<Task> tasks = taskRepository.findAll(Sort.by(Sort.Direction.ASC, "status"));
-        return tasks.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
+//    public List<TaskDto> getAllTasks() {
+//        List<Task> tasks = taskRepository.findAll();
+//        return tasks.stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
     public TaskDto getTaskById(Long id) {
         Task task = taskRepository.findById(id).orElse(null);
         return convertToDto(task);
     }
 
-    public TaskDto saveTask(TaskDto taskDto) {
-        Task task = convertToEntity(taskDto);
+    public TaskDto saveTask(TaskCreateDto taskDto) {
+        TaskDto taskDtoForCreate = TaskDto.builder()
+                .name(taskDto.getName())
+                .authorId(employeeService.getEmployeeById(taskDto.getAuthorId()))
+                .executorId(employeeService.getEmployeeById(taskDto.getExecutorId()))
+                .status(taskDto.getStatus())
+                .comment(taskDto.getComment())
+                .priority(taskDto.getPriority())
+                .projectId(projectService.getProjectById(taskDto.getProjectId()))
+                .build();
+        Task task = convertToEntity(taskDtoForCreate);
         task = taskRepository.save(task);
         return convertToDto(task);
     }
@@ -78,45 +69,54 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
+    public TaskDto updateTask(TaskCreateDto taskDto) {
+        TaskDto taskDtoForUpdate = TaskDto.builder()
+                .id(taskDto.getId())
+                .name(taskDto.getName())
+                .authorId(employeeService.getEmployeeById(taskDto.getAuthorId()))
+                .executorId(employeeService.getEmployeeById(taskDto.getExecutorId()))
+                .status(taskDto.getStatus())
+                .comment(taskDto.getComment())
+                .priority(taskDto.getPriority())
+                .projectId(projectService.getProjectById(taskDto.getProjectId()))
+                .build();
+
+        boolean existingTask = taskRepository.existsById(taskDtoForUpdate.getId());
+        if (!existingTask) {
+            throw new NoSuchElementException("Task with name: " + taskDto.getName() + " not found.");
+        }
+        Task task = convertToEntity(taskDtoForUpdate);
+        task = taskRepository.save(task);
+        return convertToDto(task);
+    }
 
     private TaskDto convertToDto(Task task) {
-        var executor = employeeService.getEmployee(task.getExecutor().getId());
-        if (executor.isEmpty()) {
-            throw new NoSuchElementException("Executor not found with id: " + task.getExecutor().getId());
-        }
-        var author = employeeService.getEmployee(task.getAuthor().getId());
-        if (author.isEmpty()) {
-            throw new NoSuchElementException("Author not found with id: " + task.getAuthor().getId());
-        }
+        var executor = employeeService.getEmployeeById(task.getExecutor().getId());
+
+        var author = employeeService.getEmployeeById(task.getAuthor().getId());
         var project = projectService.getProjectById(task.getProject().getId());
-        if (project.isEmpty()) {
-            throw new NoSuchElementException("Project not found with id: " + task.getProject().getId());
-        }
         return TaskDto.builder()
                 .id(task.getId())
                 .name(task.getName())
-                .authorId(author.get().getId())
-                .executorId(executor.get().getId())
+                .authorId(author)
+                .executorId(executor)
                 .status(task.getStatus())
                 .comment(task.getComment())
                 .priority(task.getPriority())
-                .projectId(project.get().getId())
+                .projectId(project)
                 .build();
     }
 
     private Task convertToEntity(TaskDto taskDto) {
-        var executor = employeeService.getEmployee(taskDto.getExecutorId());
+        var executor = employeeService.getEmployee(taskDto.getExecutorId().getId());
         if (executor.isEmpty()) {
             throw new NoSuchElementException("Executor not found with id: " + taskDto.getExecutorId());
         }
-        var author = employeeService.getEmployee(taskDto.getAuthorId());
+        var author = employeeService.getEmployee(taskDto.getAuthorId().getId());
         if (author.isEmpty()) {
             throw new NoSuchElementException("Author not found with id: " + taskDto.getAuthorId());
         }
-        var project = projectService.getProjectById(taskDto.getProjectId());
-        if (project.isEmpty()) {
-            throw new NoSuchElementException("Project not found with id: " + taskDto.getProjectId());
-        }
+        var project = projectService.getProjectById(taskDto.getProjectId().getId());
         Task task = Task.builder()
                 .id(taskDto.getId())
                 .name(taskDto.getName())
@@ -125,8 +125,14 @@ public class TaskService {
                 .status(taskDto.getStatus())
                 .comment(taskDto.getComment())
                 .priority(taskDto.getPriority())
-                .project(project.get())
+                .project(projectService.convertToEntity(project))
                 .build();
         return task;
+    }
+    public List<TaskDto> getTasksByProjectId(Long projectId) {
+        List<Task> tasks = taskRepository.findByProjectId(projectId);
+        return tasks.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 }

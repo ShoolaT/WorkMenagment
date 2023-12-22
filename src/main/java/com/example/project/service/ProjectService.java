@@ -1,27 +1,47 @@
 package com.example.project.service;
 
+import com.example.project.dto.ProjectCreateDto;
 import com.example.project.dto.ProjectDto;
+import com.example.project.model.Employee;
 import com.example.project.model.Project;
+import com.example.project.repository.EmployeeRepository;
 import com.example.project.repository.ProjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProjectService {
 
-    @Autowired
-    private ProjectRepository projectRepository;
-    @Autowired
-    private CompanyService companyService;
-    @Autowired
-    private EmployeeService employeeService;
+    private final ProjectRepository projectRepository;
+    private final CompanyService companyService;
+    private final EmployeeService employeeService;
+    private final EmployeeRepository employeeRepository;
 
+    public Page<ProjectDto> getProjects(int page, int size, String sort) {
+        var list = projectRepository.findAll(PageRequest.of(page, size, Sort.by(sort)));
+        return toPage(list.getContent(), PageRequest.of(list.getNumber(), list.getSize(), list.getSort()));
+    }
+
+    private Page<ProjectDto> toPage(List<Project> projects, Pageable pageable) {
+        var list = projects.stream()
+                .map(this::convertToDto)
+                .toList();
+        if (pageable.getOffset() >= list.size()) {
+            return Page.empty();
+        }
+        int startIndex = (int) pageable.getOffset();
+        int endIndex = (int) ((pageable.getOffset() + pageable.getPageSize()) > list.size() ?
+                list.size() :
+                pageable.getOffset() + pageable.getPageSize());
+        List<ProjectDto> subList = list.subList(startIndex, endIndex);
+        return new PageImpl<>(subList, pageable, list.size());
+    }
     public List<ProjectDto> getAllProjects() {
         List<Project> projects = projectRepository.findAll();
         return projects.stream()
@@ -29,51 +49,37 @@ public class ProjectService {
                 .collect(Collectors.toList());
     }
 
-    public List<ProjectDto> sortByPriority() {
-        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "priority"));
-        return projects.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public ProjectDto getProjectById(Long id) {
+        var project = projectRepository.findById(id).get();
+        return convertToDto(project);
     }
 
-    public List<ProjectDto> sortByStartDate() {
-        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "startDate"));
-        return projects.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+    public ProjectDto saveProject(ProjectCreateDto projectDto) {
+        ProjectDto projectDtoForCreate = ProjectDto.builder()
+                .name(projectDto.getName())
+                .customerCompanyId(companyService.getCompanyById(projectDto.getCustomerCompanyId()))
+                .executorCompanyId(companyService.getCompanyById(projectDto.getExecutorCompanyId()))
+                .projectLeader(employeeService.getEmployeeById(projectDto.getProjectLeader()))
+                .startDate(projectDto.getStartDate())
+                .endDate(projectDto.getEndDate())
+                .priority(projectDto.getPriority())
+                .build();
+        Project project = convertToEntity(projectDtoForCreate);
+        project = projectRepository.save(project);
+        return convertToDto(project);
     }
-
-    public List<ProjectDto> sortByEndDate() {
-        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "endDate"));
-        return projects.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<ProjectDto> sortByProjectLeader() {
-        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "projectLeader"));
-        return projects.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-    public List<ProjectDto> sortByName() {
-        List<Project> projects = projectRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
-        return projects.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
-    }
-
-
-
-
-
-    public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
-    }
-
-    public ProjectDto saveProject(ProjectDto projectDto) {
-        Project project = convertToEntity(projectDto);
+    public ProjectDto updateProject(ProjectCreateDto projectDto) {
+        ProjectDto projectDtoForUpdate = ProjectDto.builder()
+                .id(projectDto.getId())
+                .name(projectDto.getName())
+                .customerCompanyId(companyService.getCompanyById(projectDto.getCustomerCompanyId()))
+                .executorCompanyId(companyService.getCompanyById(projectDto.getExecutorCompanyId()))
+                .projectLeader(employeeService.getEmployeeById(projectDto.getProjectLeader()))
+                .startDate(projectDto.getStartDate())
+                .endDate(projectDto.getEndDate())
+                .priority(projectDto.getPriority())
+                .build();
+        Project project = convertToEntity(projectDtoForUpdate);
         project = projectRepository.save(project);
         return convertToDto(project);
     }
@@ -84,22 +90,16 @@ public class ProjectService {
 
     public ProjectDto convertToDto(Project project) {
         var executor_company = companyService.getCompanyById(project.getExecutorCompany().getId());
-        if (executor_company.isEmpty()) {
-            throw new NoSuchElementException("Company not found with id: " + project.getExecutorCompany());
-        }
         var customer_company = companyService.getCompanyById(project.getCustomerCompany().getId());
-        if (customer_company.isEmpty()) {
-            throw new NoSuchElementException("Company not found with id: " + project.getCustomerCompany());
-        }
         var leaderProject = employeeService.getEmployeeById(project.getProjectLeader().getId());
         return ProjectDto.builder()
                 .id(project.getId())
                 .name(project.getName())
-                .customerCompanyId(customer_company.get().getId())
-                .executorCompanyId(executor_company.get().getId())
-                .projectLeader(leaderProject.getId())
-                .startDate(project.getStartDate())
-                .endDate(project.getEndDate())
+                .customerCompanyId(customer_company)
+                .executorCompanyId(executor_company)
+                .projectLeader(leaderProject)
+                .startDate(String.valueOf(project.getStartDate()))
+                .endDate(String.valueOf(project.getEndDate()))
                 .priority(project.getPriority())
                 .build();
 
@@ -107,23 +107,17 @@ public class ProjectService {
 
 
 
-    private Project convertToEntity(ProjectDto projectDto) {
-        var executor_company = companyService.getCompanyById(projectDto.getExecutorCompanyId());
-        if (executor_company.isEmpty()) {
-            throw new NoSuchElementException("Company not found with id: " + projectDto.getExecutorCompanyId());
-        }
-        var customer_company = companyService.getCompanyById(projectDto.getCustomerCompanyId());
-        if (customer_company.isEmpty()) {
-            throw new NoSuchElementException("Company not found with id: " + projectDto.getCustomerCompanyId());
-        }
-        var leaderProject = employeeService.getEmployee(projectDto.getProjectLeader());
+    public Project convertToEntity(ProjectDto projectDto) {
+        var executor_company = companyService.getCompany(projectDto.getExecutorCompanyId().getId()).get();
+        var customer_company = companyService.getCompany(projectDto.getCustomerCompanyId().getId()).get();
+        var leaderProject = employeeService.getEmployee(projectDto.getProjectLeader().getId()).get();
         Project project = Project.builder()
                 .id(projectDto.getId())
                 .name(projectDto.getName())
-                .executorCompany(executor_company.get())
-                .customerCompany(customer_company.get())
+                .executorCompany(executor_company)
+                .customerCompany(customer_company)
                 .startDate(projectDto.getStartDate())
-                .projectLeader(leaderProject.get())
+                .projectLeader(leaderProject)
                 .endDate(projectDto.getEndDate())
                 .priority(projectDto.getPriority())
                 .build();
@@ -132,5 +126,20 @@ public class ProjectService {
 
     }
 
+    public void addEmployeeToProject(Long projectId, Long employeeId) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new NoSuchElementException("Project not found"));
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new NoSuchElementException("Employee not found"));
+
+        project.getEmployees().add(employee);
+        projectRepository.save(project);
+    }
+
+    public void removeEmployeeFromProject(Long projectId, Long employeeId) {
+        Project project = projectRepository.findById(projectId).orElseThrow(() -> new NoSuchElementException("Project not found"));
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(() -> new NoSuchElementException("Employee not found"));
+
+        project.getEmployees().remove(employee);
+        projectRepository.save(project);
+    }
 
 }
