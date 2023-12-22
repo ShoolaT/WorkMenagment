@@ -1,3 +1,4 @@
+
 <#macro layout>
 
     <!DOCTYPE html>
@@ -18,7 +19,7 @@
                 crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
         <link href="/static/styles.css">
-        <script type="text/javascript" src="/static/js/main.js"></script>
+
 
         <style>
             .glow-on-hover {
@@ -83,7 +84,7 @@
 
     <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="/profile">Navbar</a>
+        <a class="navbar-brand" href="/">Work Management</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -92,65 +93,38 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/profile">Home <span class="sr-only"></span></a>
+                    <a class="nav-link" href="/">Home<span class="sr-only"></span></a>
                 </li>
             </ul>
 
+            <ul class="navbar-nav">
+                                <#if user??>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/logout">Sign Out</a>
+                                    </li>
+                                <#else>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/login">Sign In</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/register">Sign Up</a>
+                                    </li>
+                                </#if>
+                            </ul>
         </div>
     </nav>
+
     <i class="m-5"></i>
     <div class="container border border-2 border-dark rounded-3 m-5" style="padding: 40px 55px;min-height: 300px">
         <#nested>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function getUserFromLocalStorage() {
-                const userData = localStorage.getItem('user');
-                return userData ? JSON.parse(userData) : null;
-            }
-
-            let logout = document.getElementById('logout');
-            if (logout) {
-                logout.addEventListener('click', () => localStorage.removeItem('user'));
-            }
-
-            const user = getUserFromLocalStorage();
-            const navbar = document.getElementById('navbarSupportedContent');
-
-            if (user) {
-                // User is logged in
-                const username = user.username;
-                const logoutButton = document.createElement('a');
-                logoutButton.href = '/logout';
-                logoutButton.className = 'btn btn-outline-info m-2';
-                logoutButton.id = 'logout';
-                logoutButton.textContent = 'Logout';
-                navbar.appendChild(logoutButton);
-                logoutButton.addEventListener('click', () => {
-                    localStorage.removeItem('user');
-                    // Optionally, you can perform additional logout actions here
-                });
 
 
-                console.log('Welcome, ' + username);
-            } else {
-                // User is not logged in
-                const signInButton = document.createElement('a');
-                signInButton.href = '/auth/login';
-                signInButton.className = 'btn btn-outline-info m-2';
-                signInButton.textContent = 'SignIn';
 
-                const signUpButton = document.createElement('a');
-                signUpButton.href = '/auth/register';
-                signUpButton.className = 'btn btn-outline-info m-2';
-                signUpButton.textContent = 'SignUp';
 
-                navbar.appendChild(signInButton);
-                navbar.appendChild(signUpButton);
-                console.log('User not logged in');
-            }
-        });
+
     </script>
 
     </body>

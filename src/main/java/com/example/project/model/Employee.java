@@ -1,5 +1,6 @@
 package com.example.project.model;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.util.HashSet;
@@ -20,6 +21,8 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String middleName;
+
+    @Email
     @Column(nullable = false, unique = true)
     private String email;
     @Column(nullable = false)
@@ -40,8 +43,8 @@ public class Employee {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "account_authority",
-            joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
+            name = "employee_authority",
+            joinColumns = {@JoinColumn(name = "employee_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
     private Set<Authority> authorities = new HashSet<>();
 

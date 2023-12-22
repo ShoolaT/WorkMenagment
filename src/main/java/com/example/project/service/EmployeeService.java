@@ -1,16 +1,16 @@
 package com.example.project.service;
 
 import com.example.project.dto.EmployeeDto;
+import com.example.project.model.Authority;
 import com.example.project.model.Employee;
+import com.example.project.repository.AuthorityRepository;
 import com.example.project.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +21,8 @@ public class EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    private AuthorityService authorityService;
     @Autowired
     private CompanyService companyService;
 
@@ -66,8 +68,6 @@ public class EmployeeService {
 
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
         Employee employee = convertToEntity(employeeDto);
-
-
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
         employee = employeeRepository.save(employee);
@@ -103,6 +103,21 @@ public class EmployeeService {
         if(company.isEmpty()){
             throw new NoSuchElementException("Company not found id: "+employeeDto.getCompanyId());
         }
+
+//        Set<Authority> authorities = employeeDto.getAuthorities().stream()
+//                .map(authorityName -> {
+//                    Authority authority = new Authority();
+//                    authority.setName(authorityName);
+//                    return authority;
+//                })
+//                .collect(Collectors.toSet());
+
+        Set<String> authorityNames = employeeDto.getAuthorities();
+        List<String> authorityNameList = List.copyOf(authorityNames); // Convert Set to List
+
+        List<Authority> existingAuthorities = authorityService.getAuthoritiesByNameList(authorityNameList);
+
+
         return Employee.builder()
                 .id(employeeDto.getId())
                 .firstName(employeeDto.getFirstName())
@@ -111,6 +126,7 @@ public class EmployeeService {
                 .email(employeeDto.getEmail())
                 .password(employeeDto.getPassword())
                 .company(company.get())
+                .authorities(new HashSet<>(existingAuthorities))
                 .build();
     }
 }

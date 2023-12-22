@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="base::layout(~{::section})">
+      th:replace=~{base::layout(~{::section})}>
 <head>
   <meta charset="ISO-8859-1">
   <title>Insert title here</title>
@@ -9,7 +9,7 @@
 <body>
 <section>
   <div class="container">
-    <h2>Login</h2>
+    <h2>Sign In</h2>
     <form action="#"
           th:action="@{/login}"
           method="POST">
@@ -21,7 +21,7 @@
         <label for="password">Password</label>
         <input id="password" type="password" name="password" placeholder="Password" />
       </div>
-      <button type="submit">Login!</button>
+      <button type="submit">Sign In</button>
     </form>
   </div>
 </section>

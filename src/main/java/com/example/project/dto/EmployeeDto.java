@@ -3,6 +3,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import jakarta.validation.constraints.Email;
 
+import java.util.Set;
+
 
 @Data
 @Builder
@@ -21,5 +23,6 @@ public class EmployeeDto {
     private Long companyId;
 
     private String password;
+    private Set<String> authorities;
 }
 
