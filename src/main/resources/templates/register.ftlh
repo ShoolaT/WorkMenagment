@@ -1,6 +1,5 @@
 <#import "layout.ftlh" as main>
 <@main.layout>
-
     <div class="container">
         <h2>Sign Up</h2>
         <form action="#" method="POST">
@@ -40,7 +39,6 @@
                     </#list>
                 </select>
             </div>
-
             <button type="submit">Sign Up</button>
         </form>
     </div>
