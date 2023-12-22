@@ -24,6 +24,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/rss/**").permitAll()
                         .requestMatchers("/register/**").permitAll()
+                                .requestMatchers("/tasks/**").permitAll()
                         .requestMatchers("/home").permitAll()
 //                        .requestMatchers("/login").anonymous()
                         .anyRequest().fullyAuthenticated()

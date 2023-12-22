@@ -104,7 +104,7 @@ public class TaskService {
                 .build();
     }
 
-    private Task convertToEntity(TaskDto taskDto) {
+    public Task convertToEntity(TaskDto taskDto) {
         var executor = employeeService.getEmployee(taskDto.getExecutorId());
         if (executor.isEmpty()) {
             throw new NoSuchElementException("Executor not found with id: " + taskDto.getExecutorId());

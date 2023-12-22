@@ -4,6 +4,8 @@ import com.example.project.enums.TaskStatus;
 import lombok.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class TaskDto {
     private Long id;

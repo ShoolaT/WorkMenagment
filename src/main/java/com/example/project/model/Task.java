@@ -32,4 +32,19 @@ public class Task {
     @JoinColumn(name = "project_id")
     private Project project;
 
+
+    @Override
+    public String toString() {
+        return
+                "id =" + id + "\n" +
+                "name ='" + name + "\n" +
+                "author =" + (author != null ? author.getFirstName() + " " + author.getLastName() : null) + "\n" +
+                "executor =" + (executor != null ? executor.getFirstName() + " " + executor.getLastName() : null) + "\n" +
+                "status =" + status + "\n" +
+                "comment ='" + comment + "\n" +
+                "priority =" + priority + "\n" +
+                "project =" + (project != null ? project.getName() : null)
+                ;
+    }
+
 }

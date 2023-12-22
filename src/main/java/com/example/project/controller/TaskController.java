@@ -1,8 +1,12 @@
 package com.example.project.controller;
 
 import com.example.project.dto.TaskDto;
+import com.example.project.model.Task;
 import com.example.project.service.TaskService;
+import com.example.project.telegram_bot.service.TelegramBot;
+import com.vdurmont.emoji.EmojiParser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +15,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
 public class TaskController {
+    @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TelegramBot telegramBot;
 
     @GetMapping
     public List<TaskDto> getAllTasks() {
@@ -51,12 +59,21 @@ public class TaskController {
 
     @PostMapping
     public TaskDto createTask(@RequestBody TaskDto taskDto) {
+        Task createdTask=taskService.convertToEntity(taskDto);
+        String message = EmojiParser.parseToUnicode(":bell::bell::bell::bell::bell:\n New task created:\n" + createdTask.toString());
+        telegramBot.sendCreateTaskNotification(message);
+
         return taskService.saveTask(taskDto);
     }
 
     @PutMapping("/{id}")
     public TaskDto updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto) {
         taskDto.setId(id);
+
+        Task updatedTask=taskService.convertToEntity(taskDto);
+        String message = EmojiParser.parseToUnicode(":bell::bell::bell::bell::bell:\nTask updated:\n" + updatedTask.toString());
+        telegramBot.sendCreateTaskNotification(message);
+
         return taskService.saveTask(taskDto);
     }
 
