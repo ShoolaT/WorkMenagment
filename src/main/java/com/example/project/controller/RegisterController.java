@@ -55,16 +55,6 @@ public class RegisterController {
     }
 
 
-//    @PostMapping("/register")
-//    public ResponseEntity<String> registerNewUser(@RequestBody EmployeeDto employeeDto) {
-//        if (employeeService.findByEmail(employeeDto.getEmail()) != null) {
-//            System.out.println("---------------register error");
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with this email already exists.");
-//        } else {
-//            employeeService.saveEmployee(employeeDto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully.");
-//        }
-//    }
 
 
 

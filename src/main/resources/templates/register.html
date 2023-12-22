@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="base::layout(~{::section})">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Insert title here</title>
+
+</head>
+<body>
+<section>
+    <div class="container">
+        <h2>Register New Account</h2>
+        <form action="#"
+              th:action="@{/register}"
+              th:object="${employee}"
+              method="POST">
+            <div>
+                <label for="firstname">First Name</label>
+                <input id="firstname" type="text" th:field="*{firstName}" placeholder="First Name"/>
+            </div>
+            <div>
+                <label for="lastname">Last Name</label>
+                <input id="lastname" type="text" th:field="*{lastName}" placeholder="Last Name"/>
+            </div>
+            <div>
+                <label for="middlename">Middle Name</label>
+                <input id="middlename" type="text" th:field="*{middleName}" placeholder="Middle Name"/>
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input id="email" type="text" th:field="*{email}" placeholder="Email"/>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input id="password" type="password" th:field="*{password}" placeholder="Password"/>
+            </div>
+            <div>
+                <label for="companyId">Company</label>
+                <input id="companyId" type="text" th:field="*{companyId}" placeholder="Company"/>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+</section>
+</body>
+</html>
